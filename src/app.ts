@@ -17,6 +17,9 @@ const AppDataSource = new DataSource({
   username: "nfdvsart",
   password: process.env.DB_PASS,
   database: "nfdvsart",
+  entities: ["src/entities/*{.ts,.js}"],
+  synchronize: true,
+  logging: true,
 });
 
 AppDataSource.initialize()
