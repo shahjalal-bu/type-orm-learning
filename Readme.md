@@ -1,78 +1,25 @@
-Setting up an Express application with TypeScript involves a few steps to configure the environment, install necessary dependencies, and define the project structure. Here's a basic guide to get you started:
+Setting up TypeORM with PostgreSQL and ElephantSQL involves creating an ElephantSQL database, configuring TypeORM to connect to the database, and using TypeORM to interact with the database. Here's a step-by-step guide:
 
-### 1: Initialize Your Project
+1. **Create an ElephantSQL Database**
 
-Initialize a new project using npm or yarn.
+   - Create an account on ElephantSQL (https://elephantsql.com/) if you don't have one already.
+   - Create a new database instance.
+   - Take note of the database connection details, including the host, port, username, password, and database name.
 
-```bash
-# Create a new directory for your project
-
-mkdir typeorm-learning
-
-# Navigate into the directory
-cd typeorm-learning
-
-# Initialize a new npm package
-npm init -y
-```
-
-### 2: Install Dependencies
-
-Install the necessary packages: Express, TypeScript, and other related libraries.
+2. **Install TypeORM and PostgreSQL Driver**
+   - Open your project directory in a terminal.
+   - Install TypeORM, reflect-metadata and the PostgreSQL driver:
 
 ```bash
-# TypeScript install globally
-npm install -g typescript
-
-# TypeScript related packages
-npm install --save-dev ts-node @types/node @types/express
-
-# Express
-npm install express
-
-# Nodemon
-npm install nodemon --save-dev
+npm install typeorm reflect-metadata pg
 ```
 
-### 3: Initialize tsconfig.json
-
-```bash
- tsc --init
-```
-
-### 4: Configure TypeScript
-
-Edit `tsconfig.json` file to set up TypeScript configurations:
-
-```json
-// tsconfig.json
-{
-  "compilerOptions": {
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
-  }
-}
-```
-
-### Step 4: Project Structure
-
-Create your project structure. You can organize it as you see fit, but here's a basic structure:
-
-```
-typeorm-learning
-├── src
-|   ├── index.ts
-└── tsconfig.json
-```
-
-### Step 5: Writing Express Code in TypeScript
-
-#### `src/index.ts`
+3. **Configure TypeORM in app.ts**
 
 ```typescript
 import express, { Request, Response } from "express";
+import "reflect-metadata"; //import reflect
+import { DataSource } from "typeorm"; //import typeorm
 const app = express();
 app.use(express.json());
 const port = 2000;
@@ -81,44 +28,21 @@ app.get("/", (req: Request, res: Response) => {
   res.send("Hello From express");
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+const AppDataSource = new DataSource({
+  type: "postgres",
+  host: "hansken.db.elephantsql.com",
+  port: 5432,
+  username: "nfdvsart",
+  password: "", // put password form elephantsql
+  database: "nfdvsart",
 });
-```
 
-### Step 6: Running the Application
-
-#### Open `package.json` and Update with scripts to run the application:
-
-```json
-"scripts": {
-  "start:dev": "nodemon ./src/app.ts",
-  "build": "tsc -p .",
-  "start:prod": "node ./dist/app.js"
-}
-```
-
-### Step 7: Build and Run
-
-# To start the application in development:
-
-```bash
-npm run start:dev
-
-```
-
-This will watch for changes in your TypeScript files and restart the server automatically.
-
-# To build the application ts to js
-
-```bash
-npm run build
-
-```
-
-# To start the application in production after build:
-
-```bash
-npm run start:prod
-
+AppDataSource.initialize()
+  .then(() => {
+    console.log("Database connect success");
+    app.listen(port, () => {
+      console.log("Server is running on port 2000");
+    });
+  })
+  .catch((err) => console.log("Error ", err));
 ```
