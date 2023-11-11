@@ -1,27 +1,124 @@
-TypeORM is a powerful Object-Relational Mapping (ORM) framework for TypeScript and JavaScript. It simplifies the process of working with databases by providing a high-level abstraction that maps database tables to JavaScript classes and vice versa. TypeORM supports a wide range of features, including:
+Setting up an Express application with TypeScript involves a few steps to configure the environment, install necessary dependencies, and define the project structure. Here's a basic guide to get you started:
 
-* **Active Record and Data Mapper patterns:** TypeORM supports both Active Record and Data Mapper patterns, giving you the flexibility to choose the approach that best suits your needs.
+### 1: Initialize Your Project
 
-* **Query Builder:** TypeORM provides a powerful Query Builder that allows you to construct complex SQL queries without writing raw SQL code.
+Initialize a new project using npm or yarn.
 
-* **Relations:** TypeORM supports various types of relations between entities, including one-to-one, one-to-many, many-to-one, and many-to-many.
+```bash
+# Create a new directory for your project
 
-* **Migrations:** TypeORM supports migrations, which allow you to manage database schema changes in a controlled and repeatable way.
+mkdir typeorm-learning
 
-* **Multiple databases:** TypeORM can connect to and work with multiple databases simultaneously.
+# Navigate into the directory
+cd typeorm-learning
 
-* **Platform support:** TypeORM supports a wide range of database platforms, including MySQL, PostgreSQL, MariaDB, SQLite, MS SQL Server, Oracle, SAP Hana, and WebSQL.
+# Initialize a new npm package
+npm init -y
+```
 
-* **TypeScript support:** TypeORM is fully integrated with TypeScript, providing strong type checking and code completion for your database operations.
+### 2: Install Dependencies
 
-Here are some of the benefits of using TypeORM:
+Install the necessary packages: Express, TypeScript, and other related libraries.
 
-* **Increased productivity:** TypeORM can significantly increase your productivity by simplifying the process of working with databases.
+```bash
+# TypeScript install globally
+npm install -g typescript
 
-* **Reduced code complexity:** TypeORM reduces the amount of code you need to write to perform common database operations.
+# TypeScript related packages
+npm install --save-dev ts-node @types/node @types/express
 
-* **Improved maintainability:** TypeORM makes your code more maintainable by providing a clean and organized way to interact with your database.
+# Express
+npm install express
 
-* **Reduced errors:** TypeORM's type checking and code generation features help to reduce errors in your database interactions.
+# Nodemon
+npm install nodemon --save-dev
+```
 
-Overall, TypeORM is a powerful and versatile ORM framework that can make your database development process more efficient, maintainable, and error-free.
+### 3: Initialize tsconfig.json
+
+```bash
+ tsc --init
+```
+
+### 4: Configure TypeScript
+
+Edit `tsconfig.json` file to set up TypeScript configurations:
+
+```json
+// tsconfig.json
+{
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  }
+}
+```
+
+### Step 4: Project Structure
+
+Create your project structure. You can organize it as you see fit, but here's a basic structure:
+
+```
+typeorm-learning
+├── src
+|   ├── index.ts
+└── tsconfig.json
+```
+
+### Step 5: Writing Express Code in TypeScript
+
+#### `src/index.ts`
+
+```typescript
+import express, { Request, Response } from "express";
+const app = express();
+app.use(express.json());
+const port = 2000;
+
+app.get("/", (req: Request, res: Response) => {
+  res.send("Hello From express");
+});
+
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
+```
+
+### Step 6: Running the Application
+
+#### Open `package.json` and Update with scripts to run the application:
+
+```json
+"scripts": {
+  "start:dev": "nodemon ./src/app.ts",
+  "build": "tsc -p .",
+  "start:prod": "node ./dist/app.js"
+}
+```
+
+### Step 7: Build and Run
+
+# To start the application in development:
+
+```bash
+npm run start:dev
+
+```
+
+This will watch for changes in your TypeScript files and restart the server automatically.
+
+# To build the application ts to js
+
+```bash
+npm run build
+
+```
+
+# To start the application in production after build:
+
+```bash
+npm run start:prod
+
+```
