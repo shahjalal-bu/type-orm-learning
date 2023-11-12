@@ -1,5 +1,3 @@
-"strictPropertyInitialization": false,
-
 To create and connect a TypeORM entity and connect to app
 
 **1. Create your Entity Classes:**
