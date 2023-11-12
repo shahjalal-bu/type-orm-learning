@@ -1,51 +1,61 @@
-"strictPropertyInitialization": false,
+TypeOrm Repository Tutorial
 
-To create and connect a TypeORM entity and connect to app
+1.  **Creating the User Repository:**
 
-**1. Create your Entity Classes:**
-
-Define entity classes to represent your database tables. These classes should be decorated with the `@Entity()` decorator and include properties for each column in the table. For example, to create an entity class for a `User` table:
-**entities/User.ts**
+- `AppDataSource.getRepository(User)`: Retrieves the repository associated with the `User` entity from the data source.
+- `userRepo`: Stores the reference to the `User` repository for subsequent operations.
 
 ```typescript
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
-@Entity()
-export class User {
-  @PrimaryGeneratedColumn()
-  id: number;
-  @Column()
-  firstName: string;
-  @Column()
-  lastName: string;
-  @Column()
-  email: string;
-}
+const userRepo = AppDataSource.getRepository(User);
 ```
 
-**2. Configure tsconfig.json:**
-Disabling `strictPropertyInitialization` because it lead to errors if you attempt to use a property before it has been initialized. Therefore, it's generally recommended to keep this option enabled unless you have a specific reason to disable it.
+2.  **Making crud operation with User Repository:**
 
-```bash
-  "strictPropertyInitialization": false,
+```typescript
+//get user
+app.get("/", async (req: Request, res: Response) => {
+  const users = await userRepo.find();
+  res.json(users);
+});
+//get a user
+app.get("/:id", async (req: Request, res: Response) => {
+  const id: number = +req.params.id;
+  const users = await userRepo.findOne({ where: { id: id } });
+  res.json(users);
+});
+//post user
+app.post("/", async (req: Request, res: Response) => {
+  const body: User = req.body;
+  const user = await userRepo.save(body);
+  res.json(user);
+});
+//delete user
+app.delete("/:id", async (req: Request, res: Response) => {
+  const id: number = +req.params.id;
+  const user = await userRepo.delete(id);
+  res.json(user);
+});
+
+//update a user
+app.put("/:id", async (req: Request, res: Response) => {
+  const id: number = +req.params.id;
+  const body: User = req.body;
+  const user = await userRepo.update(id, body);
+  res.json(user);
+});
 ```
 
-**3. Connect entries to app:**
-
-In your `app.ts` file, establish a connection of entries
+3.  **Final Code Of App.ts**
 
 ```typescript
 import express, { Request, Response } from "express";
 import "reflect-metadata";
 import { DataSource } from "typeorm";
+import { User } from "./entities/User";
 require("dotenv").config();
 const app = express();
 app.use(express.json());
 const port = 2000;
-
-app.get("/", (req: Request, res: Response) => {
-  res.send("Hello From express");
-});
-
 const AppDataSource = new DataSource({
   type: "postgres",
   host: "hansken.db.elephantsql.com",
@@ -53,9 +63,41 @@ const AppDataSource = new DataSource({
   username: "nfdvsart",
   password: process.env.DB_PASS,
   database: "nfdvsart",
-  entities: ["src/entities/*{.ts,.js}"], //import all entries
-  synchronize: true, //so that if entries change automatically database change
-  logging: true, //console useful log of query
+  entities: ["src/entities/*{.ts,.js}"],
+  synchronize: true,
+  logging: true,
+});
+const userRepo = AppDataSource.getRepository(User);
+//get user
+app.get("/", async (req: Request, res: Response) => {
+  const users = await userRepo.find();
+  res.json(users);
+});
+//get a user
+app.get("/:id", async (req: Request, res: Response) => {
+  const id: number = +req.params.id;
+  const users = await userRepo.findOne({ where: { id: id } });
+  res.json(users);
+});
+//post user
+app.post("/", async (req: Request, res: Response) => {
+  const body: User = req.body;
+  const user = await userRepo.save(body);
+  res.json(user);
+});
+//delete user
+app.delete("/:id", async (req: Request, res: Response) => {
+  const id: number = +req.params.id;
+  const user = await userRepo.delete(id);
+  res.json(user);
+});
+
+//update a user
+app.put("/:id", async (req: Request, res: Response) => {
+  const id: number = +req.params.id;
+  const body: User = req.body;
+  const user = await userRepo.update(id, body);
+  res.json(user);
 });
 
 AppDataSource.initialize()
